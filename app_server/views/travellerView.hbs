@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveller List</title>
+</head>
+<body>
+    <header>
+        <!-- Add more content if necessary -->
+    </header>
+
+    <main>
+        <h2>Traveller List</h2>
+        <div id="travellers-container">
+            <!-- This is where the dynamic content will go -->
+        </div>
+    </main>
+
+    </footer>
+
+    <script>
+        // Fetch the data from the server's SPA route
+        fetch('/travellers/spa')
+            .then(response => response.json())  // Convert response to JSON
+            .then(data => {
+                const container = document.getElementById('travellers-container');
+                // Loop through the travellers and display the name, destination, and tour date
+                data.travellers.forEach(traveller => {
+                    const travellerElement = document.createElement('p');
+                    // Check if the traveller has a tour date
+                    if (traveller.tourDate) {
+                        travellerElement.innerText = `${traveller.name} is traveling to ${traveller.destination} on ${new Date(traveller.tourDate).toLocaleDateString()}`;
+                    } else {
+                        travellerElement.innerText = `${traveller.name} is traveling to ${traveller.destination}`;
+                    }
+                    container.appendChild(travellerElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching traveller data:', error);
+            });
+    </script>
+</body>
+</html>
