@@ -39,7 +39,7 @@ app.use(passport.session());
 app.use(flash());
 
 // Register routes
-app.use('/travellers', travellerRoutes);
+app.use('/', travellerRoutes);  // Updated to ensure all routes, including /travel, are available
 
 // Route to render login page
 app.get('/login', (req, res) => {
@@ -73,8 +73,8 @@ mongoose.connect('mongodb://localhost:27017/travlrDB', {
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB connection error:", err));
 
-  require('./config/passport')(passport);
-  
+require('./config/passport')(passport);
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

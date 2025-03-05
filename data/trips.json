@@ -1,0 +1,22 @@
+[
+    {
+      "code": "HKT001",
+      "name": "Phuket Beach Adventure",
+      "length": "7 days",
+      "start": "2024-05-01",
+      "resort": "Palm Resort",
+      "perPerson": "1200",
+      "image": "phuket.jpg",
+      "description": "Enjoy a week-long tropical getaway."
+    },
+    {
+      "code": "BKK002",
+      "name": "Bangkok Explorer",
+      "length": "5 days",
+      "start": "2024-06-10",
+      "resort": "City Inn",
+      "perPerson": "950",
+      "image": "bangkok.jpg",
+      "description": "Experience the vibrant city life of Bangkok."
+    }
+  ]
