@@ -1,4 +1,4 @@
-const Traveller = require('../models/traveller');
+const Traveller = require('../../app_api/models/traveller');
 
 // Logic to handle travellers request
 exports.getTravellerInfo = async (req, res) => {

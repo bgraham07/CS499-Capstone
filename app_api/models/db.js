@@ -52,4 +52,5 @@ process.on('SIGTERM', () => {
 
 connect();
 require('./travlr');
+require('./trip');
 module.exports = mongoose;

@@ -1,66 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Travel - Travlr Getaways</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travlr Getaways</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div id="background">
-        <div id="page">
-            <div id="header">
-                <div id="logo">
-                    <a href="/"><img src="/images/logo.png" alt="LOGO" height="100" width="200"></a>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/travel">Travel</a></li>
+                <li><a href="/rooms">Rooms</a></li>
+                <li><a href="/meals">Meals</a></li>
+                <li><a href="/news">News</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Travel</h2>
+        {{#if trips.length}}
+            {{#each trips}}
+                <div class="trip">
+                    <h3>{{name}}</h3>
+                    <p><strong>Description:</strong> {{description}}</p>
+                    <p><strong>Resort:</strong> {{resort}}</p>
+                    <p><strong>Length:</strong> {{#if length}}{{length}} days{{else}}Not specified{{/if}}</p>
+                    <p><strong>Price per person:</strong> ${{perPerson}}</p>
+                    <p><strong>Start Date:</strong> {{start}}</p>
                 </div>
-                <div id="navigation">
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li class="selected"><a href="/travel">Travel</a></li>
-                        <li><a href="/rooms">Rooms</a></li>
-                        <li><a href="/meals">Meals</a></li>
-                        <li><a href="/news">News</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div id="contents">
-                <div class="box">
-                    <div>
-                        <div class="body">
-                            <h1>Travel</h1>
-                            <ul id="sites">
-                                {{#each trips}}
-                                <li>
-                                    <img src="/images/{{image}}" alt="{{name}}">
-                                    <h2>{{name}}</h2>
-                                    <p>{{description}}</p>
-                                    <p><strong>Resort:</strong> {{resort}}</p>
-                                    <p><strong>Length:</strong> {{length}}</p>
-                                    <p><strong>Price per person:</strong> ${{perPerson}}</p>
-                                    <p><strong>Start Date:</strong> {{start}}</p>
-                                </li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="footer">
-            <div>
-                <ul class="navigation">
-                    <li><a href="/">Home</a></li>
-                    <li class="active"><a href="/travel">Travel</a></li>
-                    <li><a href="/rooms">Rooms</a></li>
-                    <li><a href="/meals">Meals</a></li>
-                    <li><a href="/news">News</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </div>
-            <p>© 2025 Travlr Getaways</p>
-        </div>
-    </div>
+            {{/each}}
+        {{else}}
+            <p>No trips available at this time.</p>
+        {{/if}}
+    </main>
+
+    </footer>
 </body>
 </html>

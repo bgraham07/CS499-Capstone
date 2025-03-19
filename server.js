@@ -7,6 +7,8 @@ const flash = require('connect-flash');
 const travellerRoutes = require('./app_server/routes/travellerRoutes');
 const { engine } = require('express-handlebars'); // Updated import
 
+require('./app_api/models/db');
+
 const app = express();
 const PORT = 3000;
 
@@ -41,6 +43,9 @@ app.use(flash());
 // Register routes
 app.use('/', travellerRoutes);  // Updated to ensure all routes, including /travel, are available
 
+const apiRouter = require('./app_api/routes/index');
+app.use('/api', apiRouter);
+
 // Route to render login page
 app.get('/login', (req, res) => {
     res.render('login'); // Renders login.hbs
@@ -48,34 +53,12 @@ app.get('/login', (req, res) => {
 
 // POST route to handle login form submission
 app.post('/login', passport.authenticate('local', {
-    successRedirect: '/travellers', // Redirect to /travellers if login is successful
-    failureRedirect: '/login', // Redirect to /login if login fails
-    failureFlash: true // Show flash message on login failure
+    successRedirect: '/dashboard',
+    failureRedirect: '/login',
+    failureFlash: true
 }));
-
-// Protected route for travellers
-app.get('/travellers', isAuthenticated, (req, res) => {
-    res.render('travellerView'); // Renders travellerView.hbs with data from the database
-});
-
-// Middleware to check if the user is authenticated before accessing /travellers
-function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/login'); // Redirect to login page if not authenticated
-}
-
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/travlrDB', {
-    serverSelectionTimeoutMS: 50000  // Increases timeout to avoid buffering issues
-})
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB connection error:", err));
-
-require('./config/passport')(passport);
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

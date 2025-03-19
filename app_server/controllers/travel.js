@@ -1,19 +1,15 @@
-const fs = require('fs');
-const path = require('path');
+const fetch = require('node-fetch');
 
-const tripsFilePath = path.join(__dirname, '../../data/trips.json');
+const travelList = async (req, res) => {
+    try {
+        const response = await fetch('http://localhost:3000/api/trips');
+        const trips = await response.json();
 
-// Function to get trips data
-const travelList = (req, res) => {
-    fs.readFile(tripsFilePath, 'utf8', (err, data) => {
-        if (err) {
-            console.error("Error reading trips.json:", err);
-            return res.status(500).json({ message: "Internal Server Error" });
-        }
-
-        const trips = JSON.parse(data);
         res.render('travel', { title: 'Travel', trips });
-    });
+    } catch (error) {
+        console.error("Error fetching trips:", error);
+        res.render('travel', { title: 'Travel', trips: [], message: "Error loading trips." });
+    }
 };
 
 module.exports = { travelList };
