@@ -2,61 +2,52 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const session = require('express-session');
-const flash = require('connect-flash');
 const travellerRoutes = require('./app_server/routes/travellerRoutes');
-const { engine } = require('express-handlebars'); // Updated import
+const { engine } = require('express-handlebars');
+const cors = require('cors');
 
+require('dotenv').config(); // Load environment variables
+require('./app_api/models/user'); // Register the User model first
 require('./app_api/models/db');
+require('./app_api/config/passport'); // Load JWT passport strategy
 
 const app = express();
 const PORT = 3000;
 
+// Enable CORS to allow requests from Angular frontend
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+
 // Set Handlebars as the templating engine
 app.engine('hbs', engine({
     extname: '.hbs',
-    defaultLayout: 'main', // Tell Handlebars to use the main.hbs layout
-    layoutsDir: path.join(__dirname, 'app_server', 'views', 'layouts') // Specify the location of layout files
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'app_server', 'views', 'layouts')
 }));
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 
-// Middleware to parse JSON
+// Middleware to parse JSON and form data
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));  // For parsing form data
-
-// Setup sessions
-app.use(session({
-    secret: 'secretkey',  // Set a secret for session encryption
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }  // Set to true for HTTPS
-}));
+app.use(express.urlencoded({ extended: true }));
 
 // Initialize Passport.js
 app.use(passport.initialize());
-app.use(passport.session());
 
-// Flash messages
-app.use(flash());
-
-// Register routes
-app.use('/', travellerRoutes);  // Updated to ensure all routes, including /travel, are available
-
+// ✅ Register API routes first
 const apiRouter = require('./app_api/routes/index');
 app.use('/api', apiRouter);
 
-// Route to render login page
-app.get('/login', (req, res) => {
-    res.render('login'); // Renders login.hbs
-});
+// Then register your UI routes
+app.use('/', travellerRoutes);
 
-// POST route to handle login form submission
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/login',
-    failureFlash: true
-}));
+// Optional form-based login view
+app.get('/login', (req, res) => {
+    res.render('login');
+});
 
 // Start the server
 app.listen(PORT, () => {

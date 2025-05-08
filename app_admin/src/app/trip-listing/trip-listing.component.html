@@ -1,0 +1,52 @@
+<div class="trip-form-container">
+  <h2 class="section-title">Add a New Trip</h2>
+  <div class="trip-form">
+    <label>Name of Trip:</label>
+    <input [(ngModel)]="newTrip.name" type="text">
+    
+    <label>Length of Stay:</label>
+    <input [(ngModel)]="newTrip.length" type="number">
+    
+    <label>Resort Name:</label>
+    <input [(ngModel)]="newTrip.resort" type="text">
+    
+    <label>Cost Per Person:</label>
+    <input [(ngModel)]="newTrip.perPerson" type="number">
+
+    <button class="add-btn" (click)="addTrip()">Add Trip</button>
+  </div>
+</div>
+
+<h2 class="section-title">Available Trips</h2>
+
+<div class="trip-list">
+  <div class="trip-card" *ngFor="let trip of trips">
+    <div *ngIf="editingTripId !== trip._id">
+      <h3>{{ trip.name }}</h3>
+      <p><strong>Resort:</strong> {{ trip.resort }}</p>
+      <p><strong>Price:</strong> ${{ trip.perPerson }}</p>
+      <button class="edit-btn" (click)="startEdit(trip)">Edit</button>
+      <button class="delete-btn" (click)="deleteTrip(trip._id)">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="editingTripId" class="trip-form-container">
+  <h2 class="section-title">Edit Trip</h2>
+  <div class="trip-form">
+    <label>Name of Trip:</label>
+    <input [(ngModel)]="editedTrip.name" type="text">
+    
+    <label>Length of Stay:</label>
+    <input [(ngModel)]="editedTrip.length" type="number">
+    
+    <label>Resort Name:</label>
+    <input [(ngModel)]="editedTrip.resort" type="text">
+    
+    <label>Cost Per Person:</label>
+    <input [(ngModel)]="editedTrip.perPerson" type="number">
+    
+    <button class="update-btn" (click)="saveEdit()">Save</button>
+    <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+  </div>
+</div>
