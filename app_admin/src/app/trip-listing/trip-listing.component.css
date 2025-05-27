@@ -1,0 +1,104 @@
+/* Container for trip cards arranged in a responsive row layout */
+.trip-list {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Individual trip card styling */
+.trip-card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 280px;
+  text-align: center;
+}
+
+/* Edit button styling */
+.edit-btn {
+  background-color: orange;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Delete button styling */
+.delete-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Form container styling for creating/updating a trip */
+.trip-form-container {
+  max-width: 350px;
+  margin: 40px auto;
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Label styling in the trip form */
+.trip-form label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Input styling in the trip form */
+.trip-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Shared button styles for add, update, and cancel buttons */
+.add-btn, .update-btn, .cancel-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Add button styling */
+.add-btn {
+  background-color: blue;
+  color: white;
+  border: none;
+}
+
+/* Section title styling */
+.section-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Update button styling */
+.update-btn {
+  background-color: green;
+  color: white;
+  border: none;
+}
+
+/* Cancel button styling */
+.cancel-btn {
+  background-color: gray;
+  color: white;
+  border: none;
+}

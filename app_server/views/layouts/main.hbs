@@ -2,20 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
+    <meta charset="UTF-8"> <!-- Define character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Make layout responsive -->
+    <title>{{title}}</title> <!-- Dynamic page title -->
 </head>
 <body>
+    <!-- Site-wide header that appears on all pages using this layout -->
     <header>
         <h1>Travlr Getaways</h1>
         <!-- You can add a navigation bar or any other elements here -->
     </header>
 
+    <!-- This is where individual view templates will be injected -->
     <main>
-        {{{body}}} <!-- This is where the view content will be injected -->
+        {{{body}}} <!-- View-specific content gets rendered here -->
     </main>
 
+    <!-- Global footer shown at the bottom of every page -->
     <footer>
         <p>&copy; 2025 Travlr Getaways</p>
     </footer>

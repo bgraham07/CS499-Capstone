@@ -1,44 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travlr Getaways</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8"> <!-- Define character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive layout support -->
+    <title>Travlr Getaways</title> <!-- Page title -->
+    <link rel="stylesheet" href="/css/style.css"> <!-- Link to external CSS for styling -->
 </head>
 <body>
+    <!-- Navigation bar for site-wide links -->
     <header>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/travel">Travel</a></li>
-                <li><a href="/rooms">Rooms</a></li>
-                <li><a href="/meals">Meals</a></li>
-                <li><a href="/news">News</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li><a href="/rooms.html">Rooms</a></li>
+                <li><a href="/meals.html">Meals</a></li>
+                <li><a href="/news.html">News</a></li>
+                <li><a href="/about.html">About</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li><a href="/logout">Logout</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <h2>Travel</h2>
-        {{#if trips.length}}
-            {{#each trips}}
-                <div class="trip">
-                    <h3>{{name}}</h3>
-                    <p><strong>Description:</strong> {{description}}</p>
-                    <p><strong>Resort:</strong> {{resort}}</p>
-                    <p><strong>Length:</strong> {{#if length}}{{length}} days{{else}}Not specified{{/if}}</p>
-                    <p><strong>Price per person:</strong> ${{perPerson}}</p>
-                    <p><strong>Start Date:</strong> {{start}}</p>
+        <!-- Background container for page styling -->
+        <div id="background">
+            <!-- Main page wrapper -->
+            <div id="page">
+                <!-- Content section -->
+                <div id="contents">
+                    <div class="box">
+                        <div>
+                            <div class="body">
+                                <h1>Travel</h1> <!-- Main section title -->
+                                <ul id="sites">
+                                    {{#if trips.length}} <!-- Conditional: only show trips if data exists -->
+                                        {{#each trips}} <!-- Loop through trips array -->
+                                            <li>
+                                                <img src="/images/reef1.jpg" alt="Trip Image"> <!-- Static image placeholder -->
+                                                <h2>{{name}}</h2> <!-- Trip name -->
+                                                <p><strong>Description:</strong> {{description}}</p>
+                                                <p><strong>Resort:</strong> {{resort}}</p>
+                                                <p><strong>Length:</strong> {{#if length}}{{length}} days{{else}}Not specified{{/if}}</p> <!-- Fallback if length is missing -->
+                                                <p><strong>Price per person:</strong> ${{perPerson}}</p>
+                                                <p><strong>Start Date:</strong> {{start}}</p>
+                                            </li>
+                                        {{/each}}
+                                    {{else}} <!-- Message shown when no trips exist -->
+                                        <p>No trips available at this time.</p>
+                                    {{/if}}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            {{/each}}
-        {{else}}
-            <p>No trips available at this time.</p>
-        {{/if}}
+            </div>
+        </div>
     </main>
 
-    </footer>
 </body>
 </html>

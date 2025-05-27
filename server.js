@@ -1,64 +1,68 @@
-const express = require('express');
-const path = require('path');
-const mongoose = require('mongoose');
-const passport = require('passport');
-const session = require('express-session');
-const flash = require('connect-flash');
-const travellerRoutes = require('./app_server/routes/travellerRoutes');
-const { engine } = require('express-handlebars'); // Updated import
+const express = require('express'); // Import the Express framework
+const path = require('path'); // Built-in Node module for handling file paths
+const mongoose = require('mongoose'); // MongoDB ODM
+const passport = require('passport'); // Authentication middleware
+const travellerRoutes = require('./app_server/routes/travellerRoutes'); // Server-rendered routes
+const { engine } = require('express-handlebars'); // Handlebars templating engine
+const cors = require('cors'); // Middleware for Cross-Origin Resource Sharing
+const session = require('express-session'); // Session management
 
-require('./app_api/models/db');
+require('dotenv').config(); // Load environment variables from .env file
+require('./app_api/models/user'); // Register the User model first
+require('./app_api/models/db'); // Connect to MongoDB
+require('./app_api/config/passport'); // Load JWT passport strategy
 
 const app = express();
-const PORT = 3000;
 
-// Set Handlebars as the templating engine
+// Configure and enable express-session middleware
+app.use(session({
+  secret: 'your_secret_key', // Secret used to sign session ID cookies
+  resave: false,
+  saveUninitialized: true
+}));
+
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)));
+
+const PORT = 3000; // Define the port to run the server
+
+// Enable CORS to allow requests from Angular frontend
+app.use(cors({
+    origin: 'http://localhost:4200', // Allow requests from Angular dev server
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // Include cookies in cross-origin requests
+}));
+
+// Configure Handlebars as the templating engine for server-rendered views
 app.engine('hbs', engine({
     extname: '.hbs',
-    defaultLayout: 'main', // Tell Handlebars to use the main.hbs layout
-    layoutsDir: path.join(__dirname, 'app_server', 'views', 'layouts') // Specify the location of layout files
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'app_server', 'views', 'layouts')
 }));
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 
-// Middleware to parse JSON
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));  // For parsing form data
+// Middleware to parse incoming request bodies
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded form data
 
-// Setup sessions
-app.use(session({
-    secret: 'secretkey',  // Set a secret for session encryption
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }  // Set to true for HTTPS
-}));
-
-// Initialize Passport.js
+// Initialize Passport middleware for authentication
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Flash messages
-app.use(flash());
-
-// Register routes
-app.use('/', travellerRoutes);  // Updated to ensure all routes, including /travel, are available
-
+// Mount API routes first for backend services
 const apiRouter = require('./app_api/routes/index');
 app.use('/api', apiRouter);
 
-// Route to render login page
+// Mount UI routes (server-rendered Handlebars pages)
+app.use('/', travellerRoutes);
+
+// Optional route to render login form via Handlebars (if using UI views)
 app.get('/login', (req, res) => {
-    res.render('login'); // Renders login.hbs
+    res.render('login');
 });
 
-// POST route to handle login form submission
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/login',
-    failureFlash: true
-}));
-
-// Start the server
+// Start the Express server and listen on the defined port
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

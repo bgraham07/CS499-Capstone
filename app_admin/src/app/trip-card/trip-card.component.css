@@ -1,0 +1,22 @@
+/* Style for the card container representing each trip */
+.trip-card {
+    border: 1px solid #ccc; /* Light gray border around the card */
+    border-radius: 8px; /* Rounded corners for softer appearance */
+    padding: 16px; /* Inner spacing inside the card */
+    margin: 12px 0; /* Vertical spacing between cards */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    max-width: 400px; /* Restrict width to avoid full-page stretching */
+    background-color: #f9f9f9; /* Light background for contrast */
+}
+
+/* Header style inside the card (typically the trip name) */
+h3 {
+    margin: 0; /* Remove default top/bottom spacing */
+    color: #333; /* Dark gray for readability */
+}
+
+/* Paragraph styles for trip details */
+p {
+    margin: 4px 0; /* Slight vertical spacing between lines */
+    color: #555; /* Medium gray text color for details */
+}

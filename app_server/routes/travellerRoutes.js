@@ -4,25 +4,35 @@ const passport = require('passport');
 const travellerController = require('../controllers/travellerController');
 const travelController = require('../controllers/travel');  // Added travel controller
 
-// Route to get travellers
+// Route to get and render all travellers via server-side HTML
 router.get('/', travellerController.getTravellerInfo);
 
-// Route for SPA
+// Route to return traveller data for SPA in JSON format
 router.get('/spa', travellerController.getTravellerSPA);
 
-// Route for the travel page
+// Route to render the travel page with dynamic trip content
 router.get('/travel', travelController.travelList);  // Added travel route
 
-// Login Route
+// GET route for displaying the login page
 router.get('/login', (req, res) => {
     res.render('login');  // Render login page
 });
 
-// Handle login POST request with Passport
+// Handle login POST request with Passport authentication
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/travellers',  // Redirect to traveller list after successful login
-    failureRedirect: '/login',  // Redirect back to login if authentication fails
-    failureFlash: true  // Allow flash messages for errors
+    successRedirect: '/',  // Redirect to home page after successful login
+    failureRedirect: '/login'  // Redirect back to login if authentication fails
 }));
 
+// GET route for logging out and destroying the user session
+router.get('/logout', (req, res, next) => {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        req.session.destroy(() => {
+            res.redirect('/login'); // Redirect to login page after logout
+        });
+    });
+});
+
+// Export the configured router
 module.exports = router;

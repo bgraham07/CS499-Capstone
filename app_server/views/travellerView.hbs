@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traveller List</title>
+    <meta charset="UTF-8"> <!-- Set document character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Enable responsive design -->
+    <title>Traveller List</title> <!-- Page title in browser tab -->
 </head>
 <body>
     <header>
@@ -11,7 +11,7 @@
     </header>
 
     <main>
-        <h2>Traveller List</h2>
+        <h2>Traveller List</h2> <!-- Section title -->
         <div id="travellers-container">
             <!-- This is where the dynamic content will go -->
         </div>
@@ -21,6 +21,7 @@
 
     <script>
         // Fetch the data from the server's SPA route
+        // This script implements the SPA behavior by dynamically loading traveller data
         fetch('/travellers/spa')
             .then(response => response.json())  // Convert response to JSON
             .then(data => {
@@ -30,14 +31,18 @@
                     const travellerElement = document.createElement('p');
                     // Check if the traveller has a tour date
                     if (traveller.tourDate) {
+                        // Display formatted date along with destination
                         travellerElement.innerText = `${traveller.name} is traveling to ${traveller.destination} on ${new Date(traveller.tourDate).toLocaleDateString()}`;
                     } else {
+                        // Fallback if tour date is missing
                         travellerElement.innerText = `${traveller.name} is traveling to ${traveller.destination}`;
                     }
+                    // Append the new paragraph to the container
                     container.appendChild(travellerElement);
                 });
             })
             .catch(error => {
+                // Handle fetch or network errors gracefully
                 console.error('Error fetching traveller data:', error);
             });
     </script>

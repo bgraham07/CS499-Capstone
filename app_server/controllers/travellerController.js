@@ -1,28 +1,30 @@
 const Traveller = require('../../app_api/models/traveller');
 
-// Logic to handle travellers request
+// Controller method to fetch traveller data and render it in a server-side view
 exports.getTravellerInfo = async (req, res) => {
     try {
-        // Fetch all travellers from the database (which includes name, destination, and tourDate)
+        // Retrieve all travellers from the database, including name, destination, and tourDate
         const travellers = await Traveller.find();
 
-        // Render travellerView with data from the database
+        // Render the 'travellerView' template, passing the travellers data for display
         res.render('travellerView', { travellers: travellers });
     } catch (err) {
+        // Log any errors encountered during data retrieval and respond with a 500 error
         console.log('Error fetching traveller data:', err);
         res.status(500).send('Error fetching traveller data');
     }
 };
 
-// New method to handle SPA request
+// Controller method to fetch traveller data and send it as JSON for a Single Page Application (SPA)
 exports.getTravellerSPA = async (req, res) => {
     try {
-        // Fetch all travellers from the database (which includes name, destination, and tourDate)
+        // Retrieve all travellers from the database, including name, destination, and tourDate
         const travellers = await Traveller.find();
 
-        // Send the travellers data as JSON for SPA
+        // Respond with the travellers data in JSON format for client-side SPA consumption
         res.json({ travellers: travellers });
     } catch (err) {
+        // Log any errors encountered during data retrieval and respond with a 500 error
         console.log('Error fetching traveller data for SPA:', err);
         res.status(500).send('Error fetching traveller data');
     }
