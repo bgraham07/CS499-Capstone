@@ -1,5 +1,10 @@
-// Import the Routes type to define Angular route configurations
 import { Routes } from '@angular/router';
+import { TripListingComponent } from './trip-listing/trip-listing.component';
+import { LoginComponent } from './login/login.component';
+import { authGuard } from './guards/auth.guard';
 
-// Define an empty array of routes; to be populated with route configurations
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'trips', component: TripListingComponent, canActivate: [authGuard] }
+];

@@ -2,7 +2,11 @@
 <div class="app-header">
   <h1>Travlr Getaways Admin</h1>
   <p>Welcome to the admin dashboard.</p>
+  
+  <!-- Add logout button if user is logged in -->
+  <button *ngIf="authService.isLoggedIn()" (click)="logout()" class="logout-btn">
+    Logout
+  </button>
 </div>
 
-<!-- Angular component responsible for displaying the trip listing -->
-<app-trip-listing></app-trip-listing>
+<router-outlet></router-outlet>

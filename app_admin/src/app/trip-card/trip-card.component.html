@@ -8,4 +8,7 @@
 
     <!-- Trip pricing information -->
     <p><strong>Price:</strong> ${{ trip.price }}</p>
+    
+    <!-- Trip start date information -->
+    <p><strong>Start Date:</strong> {{ trip.start | date:'mediumDate' }}</p>
 </div>

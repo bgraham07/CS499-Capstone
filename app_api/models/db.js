@@ -1,75 +1,71 @@
-// Import mongoose for MongoDB interaction
 const mongoose = require('mongoose');
 
-// Determine the host for MongoDB, defaulting to localhost
-const host = process.env.DB_HOST || '127.0.0.1';
-const dbURI = `mongodb://${host}/travlr`;
+// Set the database URI
+let dbURI = 'mongodb://127.0.0.1/travlr';
 
-// Used to handle input/output for graceful shutdown on Windows
-const readLine = require('readline');
-
-// Function to initiate connection to MongoDB with slight delay
-const connect = () => {
-    setTimeout(() => mongoose.connect(dbURI, {}), 1000);
-};
-
-// Log when MongoDB connection is established
-mongoose.connection.on('connected', () => {
-    console.log(`Mongoose connected to ${dbURI}`);
-});
-
-// Log any errors during connection
-mongoose.connection.on('error', err => {
-    console.log('Mongoose connection error: ', err);
-});
-
-// Log when MongoDB is disconnected
-mongoose.connection.on('disconnected', () => {
-    console.log('Mongoose disconnected');
-});
-
-// Windows-specific workaround to properly handle Ctrl+C (SIGINT)
-if (process.platform === 'win32') {
-    const r1 = readLine.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-    r1.on('SIGINT', () => {
-        process.emit("SIGINT");
-    });
+// If we're in production, use the production database
+if (process.env.NODE_ENV === 'production') {
+  dbURI = process.env.MONGODB_URI;
 }
 
-// Graceful shutdown helper to log disconnection reason
-const gracefulShutdown = (msg) => {
-    mongoose.connection.close(() => {
-        console.log(`Mongoose disconnected through ${msg}`);
+console.log('Attempting to connect to MongoDB...');
+
+// Connect to MongoDB with updated options (removed deprecated ones)
+mongoose.connect(dbURI, {
+  serverSelectionTimeoutMS: 30000  // Increase timeout to 30 seconds
+}).then(() => {
+  console.log(`Mongoose connected to ${dbURI}`);
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
+  console.error('Please make sure MongoDB is running on your machine');
+});
+
+// CONNECTION EVENTS
+mongoose.connection.on('connected', () => {
+  console.log(`Mongoose connected to ${dbURI}`);
+});
+
+mongoose.connection.on('error', err => {
+  console.error('Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
+
+// CAPTURE APP TERMINATION / RESTART EVENTS
+const gracefulShutdown = (msg, callback) => {
+  mongoose.connection.close()
+    .then(() => {
+      console.log(`Mongoose disconnected through ${msg}`);
+      callback();
+    })
+    .catch(() => {
+      callback();
     });
 };
 
-// Handle app restarts (nodemon)
+// For nodemon restarts
 process.once('SIGUSR2', () => {
-    gracefulShutdown('nodemon restart');
+  gracefulShutdown('nodemon restart', () => {
     process.kill(process.pid, 'SIGUSR2');
+  });
 });
 
-// Handle app termination (Ctrl+C)
+// For app termination
 process.on('SIGINT', () => {
-    gracefulShutdown('app termination');
+  gracefulShutdown('app termination', () => {
     process.exit(0);
+  });
 });
 
-// Handle Heroku-style shutdowns
+// For Heroku app termination
 process.on('SIGTERM', () => {
-    gracefulShutdown('app shutdown');
+  gracefulShutdown('Heroku app shutdown', () => {
     process.exit(0);
+  });
 });
 
-// Start the initial connection to the database
-connect();
-
-// Load schema definitions for Mongoose
-require('./travlr');
+// BRING IN YOUR SCHEMAS & MODELS
 require('./trip');
-
-// Export mongoose for use elsewhere in the app
-module.exports = mongoose;
+require('./user');

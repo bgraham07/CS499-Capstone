@@ -1,7 +1,7 @@
 // Import required decorators and modules from Angular core
 import { Component, Input } from '@angular/core';
 // Import CommonModule to access common Angular directives in the template
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   // Define the custom HTML tag for this component
@@ -17,5 +17,10 @@ import { CommonModule } from '@angular/common';
 })
 export class TripCardComponent {
   // Input property to receive trip data from the parent component
-  @Input() trip!: { name: string; location: string; price: number };
+  @Input() trip!: { 
+    name: string; 
+    location: string; 
+    price: number;
+    start?: Date | string;
+  };
 }

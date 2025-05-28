@@ -1,27 +1,56 @@
-<!-- Form section for adding a new trip -->
-<div class="trip-form-container">
-  <h2 class="section-title">Add a New Trip</h2>
+<!-- Trip Filter Section -->
+<div class="trip-filter-container">
+  <h2 class="section-title">Filter Trips</h2>
   <div class="trip-form">
-    <!-- Input field for the name of the trip -->
+    <label>Destination:</label>
+    <input [(ngModel)]="filters.destination" type="text" placeholder="Enter destination">
+
+    <label>Min Price:</label>
+    <input [(ngModel)]="filters.priceMin" type="number" placeholder="Minimum price">
+
+    <label>Max Price:</label>
+    <input [(ngModel)]="filters.priceMax" type="number" placeholder="Maximum price">
+
+    <label>Sort By:</label>
+    <select [(ngModel)]="filters.sortBy">
+      <option value="perPerson">Price</option>
+      <option value="name">Name</option>
+    </select>
+
+    <label>Sort Direction:</label>
+    <select [(ngModel)]="filters.sortDirection">
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+
+    <button class="filter-btn" (click)="loadTrips()">Apply Filters</button>
+  </div>
+</div>
+
+<!-- Form for adding a new trip -->
+<div class="trip-form-container">
+  <h2 class="section-title">Add New Trip</h2>
+  <div class="trip-form">
     <label>Name of Trip:</label>
     <input [(ngModel)]="newTrip.name" type="text">
     
-    <!-- Input field for the trip length in days -->
     <label>Length of Stay:</label>
-    <input [(ngModel)]="newTrip.length" type="number">
+    <input [(ngModel)]="newTrip.length" type="text">
     
-    <!-- Input field for the name of the resort -->
     <label>Resort Name:</label>
     <input [(ngModel)]="newTrip.resort" type="text">
     
-    <!-- Input field for the cost per person -->
     <label>Cost Per Person:</label>
-    <input [(ngModel)]="newTrip.perPerson" type="number">
-
+    <input [(ngModel)]="newTrip.perPerson" type="text">
+    
+    <label>Start Date:</label>
+    <input [(ngModel)]="newTrip.startDate" type="date">
+    
     <!-- Button to trigger the addTrip() function -->
     <button class="add-btn" (click)="addTrip()">Add Trip</button>
   </div>
 </div>
+
 
 <!-- Section heading for the available trips -->
 <h2 class="section-title">Available Trips</h2>
@@ -34,6 +63,7 @@
       <h3>{{ trip.name }}</h3>
       <p><strong>Resort:</strong> {{ trip.resort }}</p>
       <p><strong>Price:</strong> ${{ trip.perPerson }}</p>
+      <p><strong>ID:</strong> {{ trip._id }}</p>
       <!-- Button to enter edit mode -->
       <button class="edit-btn" (click)="startEdit(trip)">Edit</button>
       <!-- Button to delete the current trip -->
@@ -51,13 +81,16 @@
     <input [(ngModel)]="editedTrip.name" type="text">
     
     <label>Length of Stay:</label>
-    <input [(ngModel)]="editedTrip.length" type="number">
+    <input [(ngModel)]="editedTrip.length" type="text">
     
     <label>Resort Name:</label>
     <input [(ngModel)]="editedTrip.resort" type="text">
     
     <label>Cost Per Person:</label>
-    <input [(ngModel)]="editedTrip.perPerson" type="number">
+    <input [(ngModel)]="editedTrip.perPerson" type="text">
+    
+    <label>Start Date:</label>
+    <input [(ngModel)]="editedTrip.start" type="date">
     
     <!-- Buttons to save or cancel the edit -->
     <button class="update-btn" (click)="saveEdit()">Save</button>

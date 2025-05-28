@@ -1,22 +1,21 @@
 import { Component } from '@angular/core';
-import { TripListingComponent } from './trip-listing/trip-listing.component';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
 
-// Decorator to define an Angular component
 @Component({
-  // Custom tag to use this component in HTML
   selector: 'app-root',
-  // This is a standalone component not declared in a module
   standalone: true,
-  // Import other components or modules needed by this component
-  imports: [TripListingComponent],
-  // Path to the component's HTML template
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
-  // Path to the component's styles
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  // Placeholder method currently not implemented
-  title(title: any) {
-    throw new Error('Method not implemented.');
+  constructor(public authService: AuthService, private router: Router) {}
+  
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
