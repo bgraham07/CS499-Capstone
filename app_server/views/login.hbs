@@ -6,28 +6,40 @@
     <title>Login</title> <!-- Page title shown in browser tab -->
 </head>
 <body>
-    <h1>Login to Travlr Getaways</h1> <!-- Main heading of the page -->
-    
-    <!-- Display flash error message if any exist -->
-    {{#if flash.error}}
-        <p class="error">{{flash.error}}</p> <!-- Show error message to user -->
-    {{/if}}
+    <div class="login-container">
+        <h2>Travlr Login</h2>
+        <div class="login-form">
+            {{#if flash.error}}
+                <div class="error-message">{{flash.error}}</div>
+            {{/if}}
 
-    <!-- Display flash success message if any exist -->
-    {{#if flash.success}}
-        <p class="success">{{flash.success}}</p> <!-- Show success message to user -->
-    {{/if}}
+            {{#if flash.success}}
+                <div class="success-message">{{flash.success}}</div>
+            {{/if}}
 
-    <!-- Form to submit login credentials -->
-    <form action="/login" method="POST">
-        <label for="email">Email</label> <!-- Label for email input -->
-        <input type="email" id="email" name="email" required> <!-- User email input -->
+            <form action="/login" method="POST" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
 
-        <label for="password">Password</label> <!-- Label for password input -->
-        <input type="password" id="password" name="password" required> <!-- User password input -->
-
-        <button type="submit">Login</button> <!-- Submit button -->
-    </form>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            // Trim whitespace from email input
+            const emailInput = document.getElementById('email');
+            emailInput.value = emailInput.value.trim();
+        });
+    </script>
 
 </body>
 </html>

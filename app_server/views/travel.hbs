@@ -4,24 +4,11 @@
     <meta charset="UTF-8"> <!-- Define character encoding -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive layout support -->
     <title>Travlr Getaways</title> <!-- Page title -->
-    <link rel="stylesheet" href="/css/style.css"> <!-- Link to external CSS for styling -->
+    <link rel="stylesheet" href="/css/style.css"> 
+    <link rel="stylesheet" href="/css/travel.css">
 </head>
 <body>
-    <!-- Navigation bar for site-wide links -->
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/travel">Travel</a></li>
-                <li><a href="/rooms.html">Rooms</a></li>
-                <li><a href="/meals.html">Meals</a></li>
-                <li><a href="/news.html">News</a></li>
-                <li><a href="/about.html">About</a></li>
-                <li><a href="/contact.html">Contact</a></li>
-                <li><a href="/logout">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+
 
     <main>
         <!-- Background container for page styling -->
@@ -34,20 +21,68 @@
                         <div>
                             <div class="body">
                                 <h1>Travel</h1> <!-- Main section title -->
+                                
+                                <!-- Filter section -->
+                                <div class="filter-container">
+                                    <h3>Filter Trips</h3>
+                                    <form id="filter-form">
+                                        <div class="filter-row">
+                                            <div class="filter-group">
+                                                <label for="destination">Destination:</label>
+                                                <input type="text" id="destination" placeholder="Enter destination" value="{{filters.destination}}">
+                                            </div>
+                                            
+                                            <div class="filter-group">
+                                                <label for="price-min">Min Price:</label>
+                                                <input type="number" id="price-min" placeholder="Minimum price" value="{{filters.priceMin}}">
+                                            </div>
+                                            
+                                            <div class="filter-group">
+                                                <label for="price-max">Max Price:</label>
+                                                <input type="number" id="price-max" placeholder="Maximum price" value="{{filters.priceMax}}">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="filter-row">
+                                            <div class="filter-group">
+                                                <label for="sort-by">Sort By:</label>
+                                                <select id="sort-by">
+                                                    <option value="perPerson" {{#if (eq filters.sortBy "perPerson")}}selected{{/if}}>Price</option>
+                                                    <option value="name" {{#if (eq filters.sortBy "name")}}selected{{/if}}>Name</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="filter-group">
+                                                <label for="sort-direction">Direction:</label>
+                                                <select id="sort-direction">
+                                                    <option value="asc" {{#if (eq filters.sortDirection "asc")}}selected{{/if}}>Ascending</option>
+                                                    <option value="desc" {{#if (eq filters.sortDirection "desc")}}selected{{/if}}>Descending</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="filter-group">
+                                                <button type="button" id="apply-filters">Apply Filters</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                
                                 <ul id="sites">
-                                    {{#if trips.length}} <!-- Conditional: only show trips if data exists -->
-                                        {{#each trips}} <!-- Loop through trips array -->
-                                            <li>
-                                                <img src="/images/reef1.jpg" alt="Trip Image"> <!-- Static image placeholder -->
-                                                <h2>{{name}}</h2> <!-- Trip name -->
-                                                <p><strong>Description:</strong> {{description}}</p>
-                                                <p><strong>Resort:</strong> {{resort}}</p>
-                                                <p><strong>Length:</strong> {{#if length}}{{length}} days{{else}}Not specified{{/if}}</p> <!-- Fallback if length is missing -->
-                                                <p><strong>Price per person:</strong> ${{perPerson}}</p>
-                                                <p><strong>Start Date:</strong> {{start}}</p>
+                                    {{#if trips.length}}
+                                        {{#each trips}}
+                                            <li class="trip-item">
+                                                <img src="/images/reef1.jpg" alt="Trip Image">
+                                                <div class="trip-details">
+                                                    <h2>{{name}}</h2>
+                                                    <p><strong>Description:</strong> {{description}}</p>
+                                                    <p><strong>Resort:</strong> {{resort}}</p>
+                                                    <p><strong>Length:</strong> {{#if length}}{{length}} days{{else}}Not specified{{/if}}</p>
+                                                    <p><strong>Price per person:</strong> ${{perPerson}}</p>
+                                                    <p><strong>Start Date:</strong> {{start}}</p>
+                                                </div>
                                             </li>
                                         {{/each}}
-                                    {{else}} <!-- Message shown when no trips exist -->
+                                    {{else}}
                                         <p>No trips available at this time.</p>
                                     {{/if}}
                                 </ul>
@@ -59,5 +94,30 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const applyFiltersBtn = document.getElementById('apply-filters');
+            
+            applyFiltersBtn.addEventListener('click', function() {
+                const destination = document.getElementById('destination').value;
+                const priceMin = document.getElementById('price-min').value;
+                const priceMax = document.getElementById('price-max').value;
+                const sortBy = document.getElementById('sort-by').value;
+                const sortDirection = document.getElementById('sort-direction').value;
+                
+                // Build query string
+                let queryParams = [];
+                if (destination) queryParams.push(`destination=${encodeURIComponent(destination)}`);
+                if (priceMin) queryParams.push(`priceMin=${encodeURIComponent(priceMin)}`);
+                if (priceMax) queryParams.push(`priceMax=${encodeURIComponent(priceMax)}`);
+                if (sortBy) queryParams.push(`sortBy=${encodeURIComponent(sortBy)}`);
+                if (sortDirection) queryParams.push(`sortDirection=${encodeURIComponent(sortDirection)}`);
+                
+                // Redirect to the same page with filters
+                const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+                window.location.href = `/travel${queryString}`;
+            });
+        });
+    </script>
 </body>
 </html>

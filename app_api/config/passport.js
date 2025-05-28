@@ -10,27 +10,35 @@ passport.use(new LocalStrategy(
   },
   async (email, password, done) => {
     try {
-      // Attempt to find a user by email
-      const user = await User.findOne({ email });
       console.log('Trying to authenticate:', email);
-      console.log('User found:', user);
+      console.log('MongoDB connection state:', mongoose.connection.readyState);
+      
+      // List all users in the database for debugging
+      const allUsers = await User.find({});
+      console.log('All users in database:', allUsers.map(u => u.email));
+      
+      // Try finding the user with case-insensitive search
+      const user = await User.findOne({ 
+        email: { $regex: new RegExp('^' + email + '$', 'i') } 
+      });
+      
+      console.log('User found:', user ? user.email : 'null');
 
-      // If user is not found, authentication fails
       if (!user) {
         return done(null, false, { message: 'Incorrect email.' });
       }
 
       // Check if the provided password matches the stored hash
-      if (!user.validPassword(password)) {
-        console.log('Password matches:', user ? user.validPassword(password) : null);
+      const isValidPassword = user.validPassword(password);
+      console.log('Password validation result:', isValidPassword);
+      
+      if (!isValidPassword) {
         return done(null, false, { message: 'Incorrect password.' });
       }
-      console.log('Password matches:', user ? user.validPassword(password) : null);
 
-      // If all checks pass, authentication succeeds
       return done(null, user);
     } catch (err) {
-      // Handle unexpected errors during authentication
+      console.error('Authentication error:', err);
       return done(err);
     }
   }

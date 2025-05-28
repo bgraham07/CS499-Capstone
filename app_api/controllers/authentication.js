@@ -34,19 +34,55 @@ const login = (req, res) => {
     return res.status(400).json({ message: 'All fields required' });
   }
 
+  console.log('Login attempt:', req.body.email);
+
   // Authenticate the user using Passport local strategy
   passport.authenticate('local', (err, user, info) => {
+    console.log('Passport authenticate result:', { err, user: !!user, info });
+    
     if (err) {
-      return res.status(404).json(err); // Return error if something goes wrong
+      console.error('Authentication error:', err);
+      return res.status(500).json(err); // Return error if something goes wrong
     }
 
     if (user) {
       // If authentication is successful, return a new JWT token
       const token = user.generateJwt();
-      res.status(200).json({ token });
+      console.log('Authentication successful, token generated');
+      
+      // Check if this is an API request or a form submission
+      const isApiRequest = req.xhr || 
+                          req.headers.accept.indexOf('json') > -1 ||
+                          req.path.startsWith('/api/');
+      
+      if (isApiRequest) {
+        // For API requests, return the token as JSON
+        return res.status(200).json({ token });
+      } else {
+        // For form submissions, redirect to the home page
+        req.login(user, (err) => {
+          if (err) {
+            console.error('Session login error:', err);
+            return res.status(500).json(err);
+          }
+          return res.redirect('/');
+        });
+      }
     } else {
       // Return unauthorized if credentials are invalid
-      res.status(401).json(info);
+      console.log('Authentication failed:', info);
+      
+      // Check if this is an API request or a form submission
+      const isApiRequest = req.xhr || 
+                          req.headers.accept.indexOf('json') > -1 ||
+                          req.path.startsWith('/api/');
+      
+      if (isApiRequest) {
+        return res.status(401).json(info);
+      } else {
+        // For form submissions, redirect back to login page
+        return res.redirect('/login');
+      }
     }
   })(req, res);
 };

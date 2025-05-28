@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { TripDataService } from '../services/trip-data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TripDataService } from '../services/trip-data.service';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trip-listing',
-  templateUrl: './trip-listing.component.html',
-  styleUrls: ['./trip-listing.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
+  templateUrl: './trip-listing.component.html',
+  styleUrls: ['./trip-listing.component.css']
 })
 export class TripListingComponent implements OnInit {
   // Holds the list of trips retrieved from the backend
@@ -23,19 +25,44 @@ export class TripListingComponent implements OnInit {
   // Holds the data for the trip currently being edited
   editedTrip: any = { name: '', length: '', resort: '', perPerson: '' };
 
+  filters: any = {
+    destination: '',
+    priceMin: null,
+    priceMax: null,
+    sortBy: 'perPerson',
+    sortDirection: 'asc'
+  };
+
   // Inject the TripDataService for communicating with the backend
-  constructor(private tripService: TripDataService) {}
+  constructor(
+    private tripService: TripDataService, 
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   // Lifecycle hook that runs after component is initialized
   ngOnInit(): void {
-    this.loadTrips(); // Load trips on component mount
+    // Check if user is authenticated
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    this.loadTrips();
   }
 
-  // Fetch trips from the backend and update the trips list
+  // Fetch trips from the backend with optional filters
   loadTrips(): void {
-    this.tripService.getTrips().subscribe((data) => {
-      this.trips = data;
-    });
+    console.log('Applying filters:', this.filters);
+    this.tripService.getTrips(this.filters).subscribe(
+      (data) => {
+        console.log('Trips received:', data);
+        this.trips = data;
+      },
+      (error) => {
+        console.error('Error loading trips:', error);
+      }
+    );
   }
 
   // Add a new trip to the backend and update UI
@@ -53,16 +80,37 @@ export class TripListingComponent implements OnInit {
       length: Number(this.newTrip.length),
       start: new Date().toISOString(), // Auto-set the start date
       resort: this.newTrip.resort,
+      destination: this.newTrip.resort, // Set destination same as resort for filtering
       perPerson: Number(this.newTrip.perPerson),
       image: 'default.jpg',
       description: 'New trip added'
     };
 
+    console.log('Adding new trip:', tripData);
+
     // Send the new trip to the backend and update the local list
-    this.tripService.addTrip(tripData).subscribe((addedTrip) => {
-      this.trips.push(addedTrip); // Add to the list visually
-      this.newTrip = { name: '', length: '', resort: '', perPerson: '' }; // Reset form
-    });
+    this.tripService.addTrip(tripData).subscribe(
+      (addedTrip) => {
+        console.log('Trip added successfully:', addedTrip);
+        // Reset filters to ensure all trips are shown
+        this.filters = {
+          destination: '',
+          priceMin: null,
+          priceMax: null,
+          sortBy: 'perPerson',
+          sortDirection: 'asc'
+        };
+        this.loadTrips(); // Refresh the trip list
+        this.newTrip = { name: '', length: '', resort: '', perPerson: '' }; // Reset form
+      },
+      (error) => {
+        console.error('Error adding trip:', error);
+        console.error('Error details:', error.error);
+        console.error('Status:', error.status);
+        console.error('Status text:', error.statusText);
+        alert('Failed to add trip. Please try again.');
+      }
+    );
   }
 
   // Delete a trip from the backend and remove it from the list

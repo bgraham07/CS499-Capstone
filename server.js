@@ -23,21 +23,30 @@ app.use(session({
 
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname)));
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = 3000; // Define the port to run the server
 
-// Enable CORS to allow requests from Angular frontend
+// Enable CORS for all routes
 app.use(cors({
-    origin: 'http://localhost:4200', // Allow requests from Angular dev server
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // Include cookies in cross-origin requests
+  origin: ['http://localhost:4200', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Configure Handlebars as the templating engine for server-rendered views
+// Set up view engine with custom helpers
 app.engine('hbs', engine({
-    extname: '.hbs',
-    defaultLayout: 'main',
-    layoutsDir: path.join(__dirname, 'app_server', 'views', 'layouts')
+  extname: 'hbs',
+  defaultLayout: 'layout',
+  layoutsDir: path.join(__dirname, 'app_server', 'views', 'layouts'),
+  partialsDir: path.join(__dirname, 'app_server', 'views', 'partials'),
+  helpers: {
+    eq: function(a, b) {
+      return a === b;
+    }
+  }
 }));
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'app_server', 'views'));

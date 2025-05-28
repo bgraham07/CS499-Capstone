@@ -1,3 +1,32 @@
+<!-- Trip Filter Section -->
+<div class="trip-filter-container">
+  <h2 class="section-title">Filter Trips</h2>
+  <div class="trip-form">
+    <label>Destination:</label>
+    <input [(ngModel)]="filters.destination" type="text" placeholder="Enter destination">
+
+    <label>Min Price:</label>
+    <input [(ngModel)]="filters.priceMin" type="number" placeholder="Minimum price">
+
+    <label>Max Price:</label>
+    <input [(ngModel)]="filters.priceMax" type="number" placeholder="Maximum price">
+
+    <label>Sort By:</label>
+    <select [(ngModel)]="filters.sortBy">
+      <option value="perPerson">Price</option>
+      <option value="name">Name</option>
+    </select>
+
+    <label>Sort Direction:</label>
+    <select [(ngModel)]="filters.sortDirection">
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+
+    <button class="filter-btn" (click)="loadTrips()">Apply Filters</button>
+  </div>
+</div>
+
 <!-- Form section for adding a new trip -->
 <div class="trip-form-container">
   <h2 class="section-title">Add a New Trip</h2>
@@ -22,6 +51,7 @@
     <button class="add-btn" (click)="addTrip()">Add Trip</button>
   </div>
 </div>
+
 
 <!-- Section heading for the available trips -->
 <h2 class="section-title">Available Trips</h2>

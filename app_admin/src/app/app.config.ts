@@ -1,11 +1,11 @@
-// Import necessary types and providers for Angular app setup
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideZoneChangeDetection } from '@angular/core';
 
-// Import the app's route configuration and components
+// Import the app's route configuration
 import { routes } from './app.routes';
-import { TripListingComponent } from './trip-listing/trip-listing.component';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 // Define the configuration object for the Angular application
 export const appConfig: ApplicationConfig = {
@@ -16,10 +16,7 @@ export const appConfig: ApplicationConfig = {
     // Register the app's routes for navigation
     provideRouter(routes),
 
-    // Enable HTTP client capabilities across the app
-    provideHttpClient(),
-
-    // Register the TripListingComponent so it can be used in standalone context
-    TripListingComponent
+    // Enable HTTP client capabilities across the app with auth interceptor
+    provideHttpClient(withInterceptors([authInterceptor]))
   ]
 };

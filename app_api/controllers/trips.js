@@ -24,9 +24,50 @@ const getUser = async (req, res, callback) => {
 // GET - Retrieve all trips from the database
 const getTrips = async (req, res) => {
     try {
-        const trips = await Trip.find(); // Fetch all trips
-        res.status(200).json(trips); // Return trip data
+        const {
+            destination,
+            priceMin,
+            priceMax,
+            startDate,
+            endDate,
+            sortBy,
+            sortDirection = 'asc'
+        } = req.query;
+
+        // Build the MongoDB query object dynamically
+        let query = {};
+        if (destination) {
+            query.destination = { $regex: new RegExp(destination, 'i') }; // Case-insensitive match
+        }
+        
+        // Handle price filtering using perPerson field
+        if (priceMin || priceMax) {
+            query.perPerson = {};
+            if (priceMin) query.perPerson.$gte = parseFloat(priceMin);
+            if (priceMax) query.perPerson.$lte = parseFloat(priceMax);
+        }
+        
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+
+        // Build the sort object
+        let sort = {};
+        if (sortBy) {
+            const direction = sortDirection.toLowerCase() === 'desc' ? -1 : 1;
+            sort[sortBy] = direction;
+        }
+
+        console.log('MongoDB query:', query);
+        console.log('Sort options:', sort);
+
+        const trips = await Trip.find(query).sort(sort); // Query with filters and sort
+        console.log(`Found ${trips.length} trips`);
+        res.status(200).json(trips); // Return filtered and sorted trips
     } catch (error) {
+        console.error('Error in getTrips:', error);
         res.status(500).json({ message: 'Error retrieving trips', error });
     }
 };

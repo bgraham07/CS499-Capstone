@@ -8,6 +8,7 @@ const tripSchema = new mongoose.Schema({
     length: { type: Number, required: true },                   // Duration of the trip in days
     start: { type: Date, required: true },                      // Start date of the trip
     resort: { type: String, required: true },                   // Name of the resort
+    destination: { type: String, required: true },              // Name of the destination
     perPerson: { type: Number, required: true },                // Cost per person
     image: { type: String, required: true },                    // Filename or URL of the trip image
     description: { type: String, required: true }               // Description of the trip

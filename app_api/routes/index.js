@@ -34,5 +34,12 @@ router.delete('/trips/:id', auth, tripController.deleteTrip);
 router.post('/register', ctrlAuth.register); // User registration
 router.post('/login', ctrlAuth.login);       // User login
 
+// Add some debugging for login route
+router.use('/login', (req, res, next) => {
+  console.log("Login route accessed with method:", req.method);
+  console.log("Login request body:", req.body);
+  next();
+});
+
 // Export the router to be used in app.js or server.js
 module.exports = router;
